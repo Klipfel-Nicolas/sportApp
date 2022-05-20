@@ -24,8 +24,8 @@ const app = express();
  * Cors (use the back in api)
  */
  const corsOptions = {
-  origin: process.env.CLIENT_URL, //Allows only our front for request
-  credentials: true,
+  origin: "*", //Allows only our front for request
+  /* credentials: true, */
   'allowedHeaders': ['sessionId', 'Content-Type'],
   'exposedHeaders': ['sessionId'],
   'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
