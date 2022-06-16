@@ -1,0 +1,4 @@
+export enum ActionTypes {
+  CREATE_USER_ACCOUNT = "CREATE_USER_ACCOUNT",
+  LOGIN_USER = "LOGIN_USER",
+}
