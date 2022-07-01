@@ -21,6 +21,10 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: string
   ): Promise<any>;
+  [ActionTypes.SET_USER](
+    { commit }: AugmentedActionContext,
+    payload: string
+  ): Promise<any>;
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -74,6 +78,25 @@ export const actions: ActionTree<State, State> & Actions = {
       .catch((err) => {
         commit(MutationTypes.SET_USER_STATUS, "error_login");
         return err;
+      });
+  },
+
+  /**
+   * SET USER
+   * @param commit
+   * @returns
+   */
+  async [ActionTypes.SET_USER]({ commit }, userId) {
+    return await axios
+      .get(`${process.env.VUE_APP_API_URL}/api/user/${userId}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        commit(MutationTypes.SET_USER_INFOS, res.data);
+      })
+      .catch((err) => {
+        commit(MutationTypes.SET_USER_INFOS, {});
+        console.log(err);
       });
   },
 };

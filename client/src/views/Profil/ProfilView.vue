@@ -1,8 +1,8 @@
 <template>
   <div class="profil-page">
     <div class="log-container">
-      <log-page v-if="userStatus === -1" />
-      <profil-page v-else />
+      <LogPage v-if="userStatus === -1" />
+      <UpdateProfil v-else />
     </div>
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import LogPage from "@/components/Authentification/Log/LogComponent.vue";
-import ProfilPage from "@/components/User/ProfilPage.vue";
+import UpdateProfil from "@/components/User/UpdateProfil.vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
@@ -18,7 +18,7 @@ export default defineComponent({
 
   components: {
     LogPage,
-    ProfilPage,
+    UpdateProfil,
   },
 
   setup() {

@@ -27,8 +27,8 @@ const app = express();
   origin: "http://localhost:8080", //Allows only our front for request
   credentials: true,
   'Access-Control-Allow-Headers': 'Authorization',
-  'allowedHeaders': ['sessionId', 'Content-Type'],
-  'exposedHeaders': ['sessionId'],
+  /*'allowedHeaders': ['sessionId', 'Content-Type'],*/
+   'exposedHeaders': ['sessionId'], 
   'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
   'preflightContinue': false
 }

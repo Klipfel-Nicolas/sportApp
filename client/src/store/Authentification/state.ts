@@ -5,7 +5,6 @@ import axios from "axios";
 
 const currentUser = localStorage.getItem("user");
 let user;
-
 if (!currentUser) {
   user = {
     userId: -1,
@@ -26,10 +25,21 @@ if (!currentUser) {
 const state = {
   status: "",
   user: user,
+  user_infos: {},
 };
 
 export type State = typeof state;
 export type User = typeof state.user;
+export interface UserInfosInterface {
+  pseudo: string;
+  bio: string;
+  email: string;
+  picture: string;
+  followers: [];
+  followings: [];
+  likes: [];
+  createdAt: string;
+}
 
 export default {
   state,

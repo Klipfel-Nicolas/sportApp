@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form action="" @submit.prevent="checkForm" id="sign-form">
+    <form action="" @submit.prevent="handleSubmit" id="sign-form">
       <!-- Pseudo -->
       <PseudoField
         v-if="classFormType === 'signUp'"
@@ -9,7 +9,7 @@
       <div>{{ inputData.pseudo }}</div>
       <!-- Email -->
       <EmailField
-        :responseError="emailError"
+        :responseError="errorsMessage.emailError"
         @removeResponseError="removeResponseMessage"
         v-model="inputData.email"
       />
@@ -17,7 +17,7 @@
       <!-- Password -->
       <PasswordField
         passwordType="password"
-        :responseError="passwordError"
+        :responseError="errorsMessage.passwordError"
         @removeResponseError="removeResponseMessage"
         v-model="inputData.password"
       />
@@ -26,7 +26,7 @@
       <PasswordField
         v-if="classFormType === 'signUp'"
         passwordType="password-confirm"
-        :responseError="confirmError"
+        :responseError="errorsMessage.confirmError"
         @removeResponseError="removeResponseMessage"
         v-model="inputData.confirm"
       />
@@ -45,11 +45,12 @@ import { defineComponent, ref, PropType, reactive } from "vue";
 import PseudoField from "@/includes/Authentification/FormFields/PseudoField.vue";
 import EmailField from "@/includes/Authentification/FormFields/EmailField.vue";
 import PasswordField from "@/includes/Authentification/FormFields/PasswordField.vue";
+//modules
 import useFormValidation from "@/modules/form/useFormValidation";
 import useSubmitButtonState from "@/modules/button/useSubmitButtonState";
+import useAuthentification from "@/modules/Authentification/useAuthentification";
+//types
 import { FormTypeTerm } from "@/types/Authentification";
-import { useStore } from "vuex";
-import { ActionTypes } from "@/store/Authentification/action-types";
 
 export default defineComponent({
   name: "SignForm",
@@ -64,9 +65,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const store = useStore();
-
-    //formData
     let inputData = reactive({
       pseudo: "",
       email: "",
@@ -74,79 +72,28 @@ export default defineComponent({
       confirm: "",
     });
 
-    //Errors from server
-    let emailError = ref("");
-    let passwordError = ref("");
-    let confirmError = ref("");
-
-    /* -------------------------
-      Methods Handle Form
-    ------------------------- */
-    const checkForm = () => {
-      if (props.classFormType === "signUp") {
-        signUp();
-      } else if (props.classFormType === "signIn") {
-        signIn();
-      }
-    };
-
-    const removeResponseMessage = (target: HTMLFormElement) => {
-      if (target.id === "email") emailError.value = "";
-      if (target.id === "password") passwordError.value = "";
-      if (target.id === "password-confirm") confirmError.value = "";
-    };
-
-    /* -------------------------
-      Methods Authentification
-    ------------------------- */
-    const signUp = () => {
-      if (inputData.password === inputData.confirm) {
-        store
-          .dispatch(ActionTypes.CREATE_USER_ACCOUNT, {
-            pseudo: inputData.pseudo,
-            email: inputData.email,
-            password: inputData.password,
-          })
-          .then((response) => {
-            if (response.data.errors) {
-              emailError.value = response.data.errors.email;
-              passwordError.value = response.data.errors.password;
-            } else {
-              signIn();
-            }
-          }),
-          (error: string) => {
-            console.error(error);
-          };
-      } else {
-        confirmError.value = "Les mots de passe ne correspondent pas";
-      }
-    };
-
-    const signIn = () => {
-      store
-        .dispatch(ActionTypes.LOGIN_USER, {
-          email: inputData.email,
-          password: inputData.password,
-        })
-        .then((response) => {
-          if (response.data.errors) {
-            emailError.value = response.data.errors.email;
-            passwordError.value = response.data.errors.password;
-          }
-        });
-    };
-
-    //Button disabled
+    //Modules
+    const { postForm, errorsMessage } = useAuthentification();
     const { errors } = useFormValidation();
     const { isButtonDisabled } = useSubmitButtonState(inputData, errors);
 
+    /* ----------
+      Methodes
+    ------------*/
+    const handleSubmit = () => {
+      postForm(props.classFormType, inputData);
+    };
+
+    const removeResponseMessage = (target: HTMLFormElement) => {
+      if (target.id === "email") errorsMessage.emailError = "";
+      if (target.id === "password") errorsMessage.passwordError = "";
+      if (target.id === "password-confirm") errorsMessage.confirmError = "";
+    };
+
     return {
       inputData,
-      emailError,
-      passwordError,
-      confirmError,
-      checkForm,
+      handleSubmit,
+      errorsMessage,
       removeResponseMessage,
       isButtonDisabled,
     };

@@ -1,5 +1,5 @@
 <template>
-  <div>This is the profile page from</div>
+  <div>This is the profile page from {{}}</div>
 
   <button @click="logout">DECONEXION</button>
 </template>
