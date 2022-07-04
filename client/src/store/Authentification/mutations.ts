@@ -1,18 +1,18 @@
 import { MutationTree } from "vuex";
 import { MutationTypes } from "./mutation-types";
-import { State, User } from "./state";
+import { State } from "./state";
 import { UserInfosInterface } from "./state";
 
 export type Mutation<S = State> = {
   [MutationTypes.SET_USER_INFOS](state: S, payload: object): void;
   [MutationTypes.SET_USER_STATUS](state: S, payload: string): void;
-  [MutationTypes.LOGIN_USER](state: S, payload: User): void;
-  [MutationTypes.LOGOUT_USER](state: S, payload: User): void;
+  [MutationTypes.LOGOUT_USER](state: S): void;
 };
 
 export const mutations: MutationTree<State> & Mutation = {
   [MutationTypes.SET_USER_INFOS](state, userInfos: UserInfosInterface) {
     const {
+      _id,
       pseudo,
       bio,
       email,
@@ -24,6 +24,7 @@ export const mutations: MutationTree<State> & Mutation = {
     } = userInfos;
 
     state.user_infos = {
+      _id,
       pseudo,
       bio,
       email,
@@ -37,16 +38,19 @@ export const mutations: MutationTree<State> & Mutation = {
   [MutationTypes.SET_USER_STATUS](state, status: string) {
     state.status = status;
   },
-  [MutationTypes.LOGIN_USER](state, user: User) {
-    localStorage.setItem("user", JSON.stringify(user));
-    state.user = user;
-  },
+
   [MutationTypes.LOGOUT_USER](state) {
-    state.user = {
-      userId: -1,
-      token: "",
+    state.status = "";
+    state.user_infos = {
+      _id: "",
+      pseudo: "",
+      bio: "",
+      email: "",
+      picture: "",
+      followers: [],
+      followings: [],
+      likes: [],
+      createdAt: "",
     };
-    state.user_infos = {};
-    localStorage.removeItem("user");
   },
 };

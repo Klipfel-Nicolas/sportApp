@@ -8,7 +8,7 @@ export type Getters = {
 
 export const getters: GetterTree<State, State> & Getters = {
   getUserName: (state) => {
-    return state.user.pseudo;
+    return state.user_infos.pseudo;
   },
 
   getUserStatus: (state) => {

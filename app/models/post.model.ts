@@ -1,6 +1,20 @@
-const mongoose = require("mongoose");
+import { Schema, model, connect } from 'mongoose';
 
-const PostSchema = new mongoose.Schema(
+interface IPost {
+    posterId: string;
+    message: string;
+    picture?: string;
+    video?: string;
+    likers?: [string];
+    comments?: [{
+        commenterId: String,
+        commenterPseudo: String,
+        text: String,
+        timestamp: Number,
+    }];
+}
+
+const PostSchema = new Schema<IPost>(
     {
         posterId: {
             type: String,
@@ -38,4 +52,4 @@ const PostSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('post', PostSchema);
+export const PostModel = model<IPost>('post', PostSchema);

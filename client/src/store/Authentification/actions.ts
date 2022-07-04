@@ -37,7 +37,7 @@ export const actions: ActionTree<State, State> & Actions = {
     commit(MutationTypes.SET_USER_STATUS, "loading");
 
     return await axios
-      .post(`${process.env.VUE_APP_API_URL}/api/user/register`, userInfos)
+      .post(`user/register`, userInfos)
       .then((res) => {
         if (!res.data.errors) {
           commit(MutationTypes.SET_USER_STATUS, "created");
@@ -63,13 +63,10 @@ export const actions: ActionTree<State, State> & Actions = {
     commit(MutationTypes.SET_USER_STATUS, "loading");
 
     return await axios
-      .post(`${process.env.VUE_APP_API_URL}/api/user/login`, userInfos, {
-        withCredentials: true,
-      })
+      .post(`user/login`, userInfos)
       .then((res) => {
         if (!res.data.errors) {
           commit(MutationTypes.SET_USER_STATUS, "Connected");
-          commit(MutationTypes.LOGIN_USER, res.data);
         } else {
           commit(MutationTypes.SET_USER_STATUS, "error_login");
         }
@@ -88,11 +85,10 @@ export const actions: ActionTree<State, State> & Actions = {
    */
   async [ActionTypes.SET_USER]({ commit }, userId) {
     return await axios
-      .get(`${process.env.VUE_APP_API_URL}/api/user/${userId}`, {
-        withCredentials: true,
-      })
+      .get(`user/${userId}`)
       .then((res) => {
         commit(MutationTypes.SET_USER_INFOS, res.data);
+        commit(MutationTypes.SET_USER_STATUS, "Connected");
       })
       .catch((err) => {
         commit(MutationTypes.SET_USER_INFOS, {});

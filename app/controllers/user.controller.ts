@@ -1,12 +1,14 @@
-const UserModel = require("../models/user.model");
+import { Request, Response } from "express";
+import { UserModel } from "../models/user.model";
 const ObjectID = require("mongoose").Types.ObjectId;
 
 /**
  * Get All Users List
  * @param {*} req
- * @param {*} res
+ * @param {*} res 
  */
-module.exports.getAllUsers = async (req, res) => {
+ export const getAllUsers = async (req: Request, res: Response) => {
+  console.log('here or not')
   const users = await UserModel.find().select("-password");
   res.status(201).json(users);
 };
@@ -15,9 +17,9 @@ module.exports.getAllUsers = async (req, res) => {
  * User Info
  * @param {params.id} req
  * @param {docs} res
- * @returns
+ * @returns 
  */
-module.exports.userInfo = (req, res) => {
+ export const userInfo = async (req: Request, res: Response) =>  {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(400).send(`ID unknow : ${req.params.id}`);
   }
@@ -34,7 +36,7 @@ module.exports.userInfo = (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.updateUser = async (req, res) => {
+ export const updateUser = async (req: Request, res: Response) => {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(400).send(`ID unknow : ${req.params.id}`);
   }
@@ -62,7 +64,7 @@ module.exports.updateUser = async (req, res) => {
  * @param {json} res
  * @returns
  */
-module.exports.deleteUser = async (req, res) => {
+ export const deleteUser = async (req: Request, res: Response) =>  {
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(400).send(`Id Unknown : ${req.params.id}`);
   }
@@ -81,7 +83,7 @@ module.exports.deleteUser = async (req, res) => {
  * @param {docs} res
  * @returns
  */
-module.exports.followUser = async (req, res) => {
+ export const followUser = async (req: Request, res: Response) =>  {
   if (
     !ObjectID.isValid(req.params.id) ||
     !ObjectID.isValid(req.body.idToFollow)
@@ -115,7 +117,7 @@ module.exports.followUser = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.unfollowUser = async (req, res) => {
+ export const unfollowUser = async (req: Request, res: Response) => {
   if (
     !ObjectID.isValid(req.params.id) ||
     !ObjectID.isValid(req.body.idToUnfollow)

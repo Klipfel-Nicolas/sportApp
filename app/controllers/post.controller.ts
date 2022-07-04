@@ -1,9 +1,9 @@
-const PostModel = require("../models/post.model");
-const UserModel = require("../models/user.model");
-const fs = require("fs");
-const { pipeline } = require("stream");
-const { uploadErrors } = require("../utils/errors.utils");
-const postModel = require("../models/post.model");
+import { Request, Response } from "express";
+import  {PostModel}  from "../models/post.model";
+import { UserModel } from "../models/user.model";
+import * as fs from 'fs';
+import { uploadErrors } from "../utils/errors.utils";
+const { pipeline } = require('stream');
 const ObjectId = require("mongoose").Types.ObjectId;
 
 /**
@@ -11,8 +11,8 @@ const ObjectId = require("mongoose").Types.ObjectId;
  * @param {*} req
  * @param {*} res
  */
-module.exports.readPost = async (req, res) => {
-  const posts = PostModel.find();
+ export const readPost = async (req: Request, res: Response) =>  {
+  const posts = await PostModel.find();
   res.status(201).json(posts);
 };
 
@@ -21,20 +21,20 @@ module.exports.readPost = async (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.createPost = async (req, res) => {
+ export const createPost = async (req: Request, res: Response) =>  {
   let fileName;
 
   //FILES UPLOAD
-  if (req.file) {
+  if ((req as any).file) {
     try {
       if (
-        req.file.detectedMimeType !== "image/jpg" &&
-        req.file.detectedMimeType !== "image/png" &&
-        req.file.detectedMimeType !== "image/jpeg"
+        (req as any).file.detectedMimeType !== "image/jpg" &&
+        (req as any).file.detectedMimeType !== "image/png" &&
+        (req as any).file.detectedMimeType !== "image/jpeg"
       )
         throw Error("invalid file"); //Throw arrete imediatement le try et renvois au catch
 
-      if (req.file.size > 500000) throw Error("max size");
+      if ((req as any).file.size > 500000) throw Error("max size");
     } catch (err) {
       const errors = uploadErrors(err);
       return res.status(201).json({ errors });
@@ -42,8 +42,8 @@ module.exports.createPost = async (req, res) => {
 
     fileName = req.body.posterId + Date.now() + ".jpg";
 
-    await pipeline(
-      req.file.stream,
+    pipeline(
+      (req as any).file.stream,
       fs.createWriteStream(
         `${__dirname}/../client/public/uploads/posts/${fileName}`
       ),
@@ -54,10 +54,10 @@ module.exports.createPost = async (req, res) => {
   }
 
   //CREATE NEW POST
-  const newPost = new postModel({
+  const newPost = new PostModel({
     posterId: req.body.posterId,
     message: req.body.message,
-    picture: req.file ? "./uploads/posts/" + fileName : "",
+    picture: (req as any).file ? "./uploads/posts/" + fileName : "",
     video: req.body.video,
     likers: [],
     comments: [],
@@ -77,7 +77,7 @@ module.exports.createPost = async (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.updatePost = async (req, res) => {
+ export const updatePost = async (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }
@@ -97,7 +97,7 @@ module.exports.updatePost = async (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.deletePost = async (req, res) => {
+ export const deletePost = async (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }
@@ -118,7 +118,7 @@ Likes
  * @param {*} res
  * @returns
  */
-module.exports.likePost = async (req, res) => {
+ export const likePost = async (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }
@@ -152,7 +152,7 @@ module.exports.likePost = async (req, res) => {
  * @param {*} res
  * @returns
  */
-module.exports.unlikePost = async (req, res) => {
+ export const unlikePost = async (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }
@@ -190,7 +190,7 @@ Comments
  * @param {*} res
  * @returns
  */
-module.exports.commentPost = (req, res) => {
+ export const commentPost = async (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }
@@ -224,7 +224,7 @@ module.exports.commentPost = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.editCommentPost = (req, res) => {
+ export const editCommentPost = async (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }
@@ -253,7 +253,7 @@ module.exports.editCommentPost = (req, res) => {
  * @param {*} req
  * @param {*} res
  */
-module.exports.deleteCommentPost = (req, res) => {
+ export const deleteCommentPost = (req: Request, res: Response) => {
   if (!ObjectId.isValid(req.params.id)) {
     return res.status(400).send("ID unknow : " + req.params.id);
   }

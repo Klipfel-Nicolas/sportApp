@@ -6,7 +6,7 @@
         v-if="classFormType === 'signUp'"
         v-model="inputData.pseudo"
       />
-      <div>{{ inputData.pseudo }}</div>
+
       <!-- Email -->
       <EmailField
         :responseError="errorsMessage.emailError"

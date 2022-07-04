@@ -1,19 +1,20 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const userRoutes = require("./routes/user.routes");
-const postRoutes = require("./routes/post.routes");
+import  express from "express";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import { userRoutes } from "./routes/user.routes";
+import { postRoutes } from "./routes/post.routes";
 
 //middleware
-const { checkUser, requireAuth } = require("./middleware/auth.middleware");
+/* const { checkUser, requireAuth } = require("./middleware/auth.middleware"); */
 const cors = require('cors');
 
 /**
  * .ENV
  * DATABASE
  */
-require("dotenv").config({ path: "./config/.env" });
-require("./config/db");
+require("dotenv").config({ path: "app/config/.env" });
+require("./config/db.js");
+
 
 /**
  * Express
@@ -41,20 +42,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-/**
- * User logged
- */
-app.get("*", checkUser);
-app.get("/jwtid", requireAuth, (req, res) => {
-  res.status(200).send(res.locals.user._id);
-})
 
 /**
  * Routes
  */
-app.use("/api/user", userRoutes)
-app.use("/api/post", postRoutes)
 
+userRoutes(app);
+postRoutes(app);
 /**
  * server
  */

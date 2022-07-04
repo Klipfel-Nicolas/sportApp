@@ -52,7 +52,6 @@ function useAuthentification() {
         if (response.data.errors) {
           errorsMessage.emailError = response.data.errors.email;
           errorsMessage.passwordError = response.data.errors.password;
-          console.log(errorsMessage);
         } else {
           //Set user Infos
           store.dispatch(ActionTypes.SET_USER, response.data.userId);

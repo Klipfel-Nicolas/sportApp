@@ -1,7 +1,7 @@
 <template>
   <div class="profil-page">
     <div class="log-container">
-      <LogPage v-if="userStatus === -1" />
+      <LogPage v-if="userStatus === ''" />
       <UpdateProfil v-else />
     </div>
   </div>
@@ -23,7 +23,9 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const userStatus = computed(() => store.state.Authentification.user.userId);
+    const userStatus = computed(
+      () => store.state.Authentification.user_infos._id
+    );
 
     return {
       userStatus,

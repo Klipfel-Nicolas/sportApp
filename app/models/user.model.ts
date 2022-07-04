@@ -1,8 +1,19 @@
-const mongoose = require("mongoose");
+import { Schema, model, connect } from 'mongoose';
+import * as bcryptjs from 'bcrypt';
 const { isEmail } = require("validator");
-const bcrypt = require("bcrypt");
 
-const userSchema = new mongoose.Schema(
+interface IUser {
+  pseudo: string;
+  email: string;
+  password: string;
+  picture?: string;
+  bio?: string;
+  followers?: [string];
+  followings?: [string];
+  likes?: [string];
+}
+
+const UserSchema = new Schema<IUser>(
   {
     pseudo: {
       type: String,
@@ -52,20 +63,20 @@ const userSchema = new mongoose.Schema(
 /**
  * Password encrypt
  */
-userSchema.pre('save', async function(next){
-  const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
+ UserSchema.pre('save', async function(next){
+  const salt = await bcryptjs.genSalt();
+  this.password = await bcryptjs.hash(this.password, salt);
   next();
 })
 
 /**
  * Password compare authentification
  */
-userSchema.statics.login = async function(email, password) {
+ UserSchema.statics.login = async function(email, password) {
   const user = await this.findOne({email});
 
   if(user) {
-    const auth = await bcrypt.compare(password, user.password);
+    const auth = await bcryptjs.compare(password, user.password);
 
     if(auth) {
       return user;
@@ -75,6 +86,4 @@ userSchema.statics.login = async function(email, password) {
   throw Error('Incorect email')
 }
 
-const UserModel = mongoose.model("user", userSchema);
-
-module.exports = UserModel;
+export const UserModel = model<IUser>('user', UserSchema);

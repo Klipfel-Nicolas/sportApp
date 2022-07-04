@@ -20,13 +20,9 @@ export default defineComponent({
 
     const logout = async () => {
       store.commit(MutationTypes.LOGOUT_USER);
-      await axios
-        .get(`${process.env.VUE_APP_API_URL}/api/user/logout`, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          console.log(res);
-        });
+      await axios.get(`user/logout`).then((res) => {
+        console.log("Disconected", res);
+      });
     };
 
     return {

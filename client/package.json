@@ -11,6 +11,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
     "dotenv": "^16.0.1",
